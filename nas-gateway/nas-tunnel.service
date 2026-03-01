@@ -1,0 +1,18 @@
+[Unit]
+Description=Cloudflare tunnel for NAS Gateway
+After=network.target nas-gateway.service
+Requires=nas-gateway.service
+
+[Service]
+Type=simple
+User=spacks
+Environment=VERCEL_REGISTER_URL=https://YOUR_VERCEL_APP.vercel.app/api/register
+Environment=NAS_REGISTER_SECRET=CHANGE_ME_REGISTER_SECRET
+Environment=LOG_DIR=/var/log/nas-gateway
+ExecStartPre=/bin/bash -c 'mkdir -p /var/log/nas-gateway'
+ExecStart=/home/spacks/pi-nas/nas-gateway/start_tunnel.sh
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

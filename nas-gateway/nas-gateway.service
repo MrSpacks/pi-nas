@@ -1,0 +1,16 @@
+[Unit]
+Description=NAS Gateway API (Flask)
+After=network.target
+
+[Service]
+Type=simple
+User=spacks
+WorkingDirectory=/home/spacks/pi-nas/nas-gateway
+Environment=NAS_DATA_ROOT=/srv/nas
+Environment=NAS_SECRET=CHANGE_ME_STRONG_SECRET
+ExecStart=/home/spacks/pi-nas/nas-gateway/venv/bin/gunicorn -w 1 -b 127.0.0.1:8080 app:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
