@@ -12,7 +12,7 @@ env/
 .env.local
 .env*.local
 *.pem
-
+.next
 # Logs and local
 *.log
 .DS_Store
