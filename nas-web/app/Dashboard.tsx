@@ -89,33 +89,42 @@ export function Dashboard() {
     <div style={styles.wrap}>
       <header style={styles.header}>
         <h1 style={styles.h1}>NAS</h1>
-        <button onClick={handleLogout} style={styles.logout}>Выход</button>
+        <button onClick={handleLogout} style={styles.logout}>
+          Выход
+        </button>
       </header>
+
       <div style={styles.breadcrumb}>
-        <button type="button" onClick={() => fetchList("")} style={styles.link}>/</button>
-        {path && (
-          <>
-            {path.split("/").map((part, i, arr) => (
-              <span key={i}>
-                <button
-                  type="button"
-                  onClick={() => fetchList(arr.slice(0, i + 1).join("/"))}
-                  style={styles.link}
-                >
-                  {part}
-                </button>
-                {i < arr.length - 1 && "/"}
-              </span>
-            ))}
-          </>
-        )}
+        <button
+          type="button"
+          onClick={() => fetchList("")}
+          style={styles.link}
+        >
+          /
+        </button>
+        {path &&
+          path.split("/").map((part, i, arr) => (
+            <span key={i}>
+              <button
+                type="button"
+                onClick={() => fetchList(arr.slice(0, i + 1).join("/"))}
+                style={styles.link}
+              >
+                {part}
+              </button>
+              {i < arr.length - 1 && "/"}
+            </span>
+          ))}
       </div>
+
       {path && (
         <button type="button" onClick={goUp} style={styles.row}>
           📁 ..
         </button>
       )}
+
       {error && <p style={styles.error}>{error}</p>}
+
       {loading ? (
         <p style={styles.muted}>Загрузка…</p>
       ) : (
@@ -123,7 +132,7 @@ export function Dashboard() {
           <div
             key={item.name}
             style={styles.row}
-            onClick={() => item.dir ? openDir(item.name) : handleDownload(item)}
+            onClick={() => (item.dir ? openDir(item.name) : handleDownload(item))}
           >
             <span>{item.dir ? "📁" : "📄"}</span>
             <span style={{ flex: 1 }}>{item.name}</span>
@@ -135,6 +144,7 @@ export function Dashboard() {
           </div>
         ))
       )}
+
       <div style={styles.upload}>
         <label style={styles.uploadLabel}>
           {uploading ? "Загрузка…" : "Загрузить файл"}
@@ -150,15 +160,25 @@ export function Dashboard() {
   );
 }
 
-const styles: React.CSSProperties = {
-  wrap: { maxWidth: 640, margin: "0 auto", padding: 24 },
+const styles = {
+  wrap: {
+    maxWidth: 640,
+    margin: "0 auto",
+    padding: 24,
+  },
+
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 24,
   },
-  h1: { margin: 0, fontSize: 20 },
+
+  h1: {
+    margin: 0,
+    fontSize: 20,
+  },
+
   logout: {
     background: "transparent",
     border: "1px solid #3f3f46",
@@ -167,7 +187,13 @@ const styles: React.CSSProperties = {
     borderRadius: 8,
     cursor: "pointer",
   },
-  breadcrumb: { marginBottom: 16, fontSize: 14, color: "#a1a1aa" },
+
+  breadcrumb: {
+    marginBottom: 16,
+    fontSize: 14,
+    color: "#a1a1aa",
+  },
+
   link: {
     background: "none",
     border: "none",
@@ -176,6 +202,7 @@ const styles: React.CSSProperties = {
     padding: 0,
     font: "inherit",
   },
+
   row: {
     display: "flex",
     alignItems: "center",
@@ -191,9 +218,21 @@ const styles: React.CSSProperties = {
     font: "inherit",
     color: "inherit",
   },
-  error: { color: "#f87171", margin: "8px 0" },
-  muted: { color: "#71717a", fontSize: 14 },
-  upload: { marginTop: 24 },
+
+  error: {
+    color: "#f87171",
+    margin: "8px 0",
+  },
+
+  muted: {
+    color: "#71717a",
+    fontSize: 14,
+  },
+
+  upload: {
+    marginTop: 24,
+  },
+
   uploadLabel: {
     display: "inline-block",
     padding: "12px 20px",
@@ -202,4 +241,4 @@ const styles: React.CSSProperties = {
     cursor: "pointer",
     border: "1px dashed #3f3f46",
   },
-};
+} as const;
