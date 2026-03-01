@@ -6,30 +6,28 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setLoading(true);
+
     try {
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       });
-      const data = await res.json();
-      if (data.ok) {
-        router.push("/");
+
+      if (res.ok) {
+        router.push("/dashboard");
         router.refresh();
       } else {
-        setError("Неверный пароль");
+        const data = await res.json();
+        setError(data.error || "Неверный пароль");
       }
-    } catch {
-      setError("Ошибка сети");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setError("Ошибка соединения");
     }
   }
 
@@ -38,76 +36,83 @@ export default function LoginPage() {
       <div style={styles.card}>
         <h1 style={styles.title}>NAS</h1>
         <p style={styles.subtitle}>Введите пароль для входа</p>
-        <form onSubmit={handleSubmit} style={styles.form}>
+
+        <form onSubmit={handleSubmit}>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Пароль"
-            autoFocus
             style={styles.input}
           />
-          {error && <p style={styles.error}>{error}</p>}
-          <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? "Вход…" : "Войти"}
+          <button type="submit" style={styles.button}>
+            Войти
           </button>
         </form>
+
+        {error && <p style={styles.error}>{error}</p>}
       </div>
     </div>
   );
 }
 
-const styles: React.CSSProperties = {
+const styles = {
   container: {
     minHeight: "100vh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: 16,
+    background: "#000",
+    padding: "20px",
   },
+
   card: {
+    background: "#111",
+    padding: "32px",
+    borderRadius: "12px",
     width: "100%",
-    maxWidth: 360,
-    padding: 32,
-    background: "#18181b",
-    borderRadius: 12,
-    border: "1px solid #27272a",
+    maxWidth: "400px",
+    border: "1px solid #333",
   },
+
   title: {
-    margin: "0 0 8px",
-    fontSize: 24,
-    fontWeight: 600,
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: "16px",
+    fontSize: "28px",
   },
+
   subtitle: {
-    margin: "0 0 24px",
-    color: "#a1a1aa",
-    fontSize: 14,
+    color: "#aaa",
+    textAlign: "center",
+    marginBottom: "24px",
   },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 16,
-  },
+
   input: {
-    padding: "12px 16px",
-    background: "#27272a",
-    border: "1px solid #3f3f46",
-    borderRadius: 8,
+    width: "100%",
+    padding: "12px",
+    marginBottom: "16px",
+    background: "#222",
+    border: "1px solid #444",
+    borderRadius: "6px",
     color: "#fff",
-    outline: "none",
+    fontSize: "16px",
   },
-  error: {
-    margin: 0,
-    color: "#f87171",
-    fontSize: 14,
-  },
+
   button: {
-    padding: "12px 16px",
-    background: "#7c3aed",
-    border: "none",
-    borderRadius: 8,
+    width: "100%",
+    padding: "12px",
+    background: "#3f3f46",
     color: "#fff",
-    fontWeight: 600,
+    border: "none",
+    borderRadius: "6px",
     cursor: "pointer",
+    fontSize: "16px",
   },
-};
+
+  error: {
+    color: "#f87171",
+    textAlign: "center",
+    marginTop: "12px",
+  },
+} as const;
